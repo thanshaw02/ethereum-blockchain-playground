@@ -1,0 +1,26 @@
+{
+  "name": "ethereum-blockchain-playground",
+  "version": "1.0.0",
+  "description": "This repository is a discovery project for professional work int he future, I will be testing the implementation of a Node based blockchain using possibly several different Node based packages, libraries, etc. to learn more about the usage of blockchains outside of theory.",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx ts-node src/app.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.21",
+    "dotenv": "^16.5.0",
+    "eslint": "^9.27.0",
+    "express": "^5.1.0",
+    "install": "^0.13.0",
+    "nodemon": "^3.1.10",
+    "npm": "^11.4.1",
+    "prettier": "^3.5.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}
