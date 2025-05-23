@@ -29,10 +29,10 @@ export const createEthereumBlockchain = async (req: Request, res: Response, next
         if (!blockchain && !common) {
             console.log("Creating blockchain!");
 
-            // create the commonf or the blockchain
+            // create a custom "Common" for the blockchain
             common = createCommonFromGethGenesis(postMergeGethGenesis, { chain: "customChain" })
 
-            // Use the safe static constructor which awaits the init method;
+            // initialization of the blockchain
             const genesisState = parseGethGenesisState(postMergeGethGenesis);
             blockchain = await createBlockchain({
                 validateBlocks: false,
@@ -64,14 +64,15 @@ export const createEthereumBlock = async (req: Request, res: Response, next: Nex
 
         const latestBlock = await blockchain.getCanonicalHeadBlock();
         const tx = createFeeMarket1559Tx({
-            // the transaction count for the sender address. Ensures transactions are processed in order and only once
-            // starts at 0 for each sender
+            // the transaction count for the sender address
+            // ensures transactions are processed in order and only once, starts at 0 for each sender
             nonce: "0x00",
 
-            // the tip paid directly to miners. Helps prioritize your transaction during congestion
+            // the tip paid directly to miners, this helps prioritize your transaction during congestion
             maxPriorityFeePerGas: "0x01",
 
-            // the maximum total fee (base fee + priority fee) you're willing to pay per gas unit. Ensures you won’t overpay if the base fee spikes
+            // the maximum total fee (base fee + priority fee) you're willing to pay per gas unit
+            // ensures you won’t overpay if the base fee spikes
             maxFeePerGas: "0xff",
 
             // this is the max amount of computational time/cost that should be used to mine this block
@@ -95,17 +96,19 @@ export const createEthereumBlock = async (req: Request, res: Response, next: Nex
         const block = createBlock(
             {
                 header: {
-                    number: latestBlock.header.number + 1n,
+                    number: latestBlock.header.number + 1n, // must be greater than the previous block
                     parentHash: latestBlock.hash(), // points to the block prior to this new block
-                    timestamp: BigInt(Math.floor(Date.now() / 1000)),
+                    timestamp: BigInt(Math.floor(Date.now() / 1000)), // must ft within the "Common" boundaries when creating blockchain
                 },
-                transactions: [tx]
+                transactions: [tx],
             },
             { common, setHardfork: true },
         );
         await blockchain.putBlock(block);
 
+        // debugging mainly
         // looping over all blocks in the blockchain
+        // note: this will always show one block you haven't created here, that is the "genesis block" created when the blockchain is initialized
         const blockData: CreateBlockResponse[] = [];
         let current = await blockchain.getBlock(0n);
         while (current) {
@@ -149,3 +152,10 @@ export const getEthereumBlockByNumber = async (req: Request, res: Response, next
         return next(error);
     }
 };
+
+/**
+ * Up next:
+ *  - Look into "Ethereum Smart Contracts"
+ *  - Validating blocks over time
+ *  - Using a database instead of in-memory blockchains
+ */

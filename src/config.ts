@@ -1,3 +1,5 @@
+// .env in root of repository
+
 import dotenv from "dotenv";
 
 dotenv.config();
