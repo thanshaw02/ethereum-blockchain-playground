@@ -1,8 +1,9 @@
 import { createBlock } from "@ethereumjs/block";
 import { Blockchain, createBlockchain } from "@ethereumjs/blockchain";
-import { Common, Hardfork, Mainnet } from "@ethereumjs/common";
+import { Common, createCommonFromGethGenesis, parseGethGenesisState } from "@ethereumjs/common";
 import { bytesToHex } from "@ethereumjs/util";
 import { Request, Response, NextFunction } from "express";
+import { postMergeGethGenesis } from "../utils";
 
 type CreateBlockResponse = {
     nameOrIndex: string | number;
@@ -17,13 +18,20 @@ export const createEthereumBlockchain = async (req: Request, res: Response, next
         let created = false;
         if (!blockchain && !common) {
             console.log("Creating blockchain!");
-            common = new Common({ chain: Mainnet, hardfork: Hardfork.London })
-            // Use the safe static constructor which awaits the init method
+
+            // create the commonf or the blockchain
+            common = createCommonFromGethGenesis(postMergeGethGenesis, { chain: "customChain" })
+
+            // Use the safe static constructor which awaits the init method;
+            const genesisState = parseGethGenesisState(postMergeGethGenesis);
             blockchain = await createBlockchain({
-                validateBlocks: false, // Skipping validation so we can make a simple chain without having to provide complete blocks
+                validateBlocks: false,
                 validateConsensus: false,
+                genesisState,
                 common,
             });
+            const genesisBlockHash = blockchain.genesisBlock.hash()
+            common.setForkHashes(genesisBlockHash);
         } else {
             console.log("Blockchain already exists!");
             created = true;
@@ -44,12 +52,13 @@ export const createEthereumBlock = async (req: Request, res: Response, next: Nex
             return next("Blockchain does not exist");
         }
 
+        const latestBlock = await blockchain.getCanonicalHeadBlock();
         const block = createBlock(
             {
                 header: {
-                    number: 1n,
-                    parentHash: blockchain.genesisBlock.hash(),
-                    difficulty: blockchain.genesisBlock.header.difficulty + 1n,
+                    number: latestBlock.header.number + 1n,
+                    parentHash: latestBlock.hash(),
+                    timestamp: BigInt(Math.floor(Date.now() / 1000)),
                 },
             },
             { common, setHardfork: true },
@@ -58,16 +67,20 @@ export const createEthereumBlock = async (req: Request, res: Response, next: Nex
         const blockData: CreateBlockResponse[] = [];
 
         await blockchain.putBlock(block);
-        await blockchain.iterator('i', (block) => {
-            const blockNumber = block.header.number.toString()
-            const blockHash = bytesToHex(block.hash())
-            console.log(`Block ${blockNumber}: ${blockHash}`);
 
-            blockData.push({
-                nameOrIndex: blockNumber,
-                hash: blockHash,
-            });
-        });
+        // looping over all blocks in the blockchain
+        let current = await blockchain.getBlock(0n);
+        while (current) {
+            try {
+                blockData.push({
+                    nameOrIndex: current.header.number.toString(),
+                    hash: bytesToHex(current.hash()),
+                });
+                current = await blockchain.getBlock(current.header.number + 1n);
+            } catch {
+                break;
+            }
+        }
 
         res.status(200).json({
             blockData
