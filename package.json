@@ -4,7 +4,9 @@
   "description": "This repository is a discovery project for professional work int he future, I will be testing the implementation of a Node based blockchain using possibly several different Node based packages, libraries, etc. to learn more about the usage of blockchains outside of theory.",
   "main": "index.js",
   "scripts": {
-    "start": "npx ts-node src/app.ts",
+    "dev": "nodemon",
+    "build": "tsc",
+    "start": "npx ts-node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
