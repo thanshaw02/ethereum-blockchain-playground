@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import {
     createEthereumBlock,
     createEthereumBlockchain,
+    getEthereumBlockByNumber,
 } from "./controllers/ethereumjs.controller";
 
 const router = Router();
@@ -18,6 +19,7 @@ router.get("/ping", (req: Request, res: Response) => {
 
 // Ethereumjs routes
 router.get("/blockchain", createEthereumBlockchain);
+router.get("/block/:number", getEthereumBlockByNumber);
 router.post("/block", createEthereumBlock);
 
 

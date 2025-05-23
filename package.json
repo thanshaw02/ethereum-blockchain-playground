@@ -29,6 +29,7 @@
     "@ethereumjs/block": "^10.0.0",
     "@ethereumjs/blockchain": "^10.0.0",
     "@ethereumjs/common": "^10.0.0",
+    "@ethereumjs/tx": "^10.0.0",
     "@ethereumjs/util": "^10.0.0",
     "crypto": "^1.0.1",
     "level": "^10.0.0"

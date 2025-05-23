@@ -6,8 +6,8 @@ import router from "./routes";
 const app = express();
 const PORT = config.port;
 
-app.use("/api", router);
 app.use(express.json());
+app.use("/api", router);
 
 // initialize Level database
 // const db = new Level<string, string>(config.ethLevelDb);
