@@ -5,3 +5,5 @@ This repository is a discovery project for professional work in the future, I wi
 ## Packages/Libraries
 
 1. @ethereumjs/blockchain
+    - https://www.npmjs.com/package/@ethereumjs/blockchain
+    - https://www.npmjs.com/package/@ethereumjs/block
