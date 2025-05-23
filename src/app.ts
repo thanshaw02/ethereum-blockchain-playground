@@ -9,9 +9,8 @@ const PORT = config.port;
 app.use(express.json());
 app.use("/api", router);
 
-// initialize Level database
+// initialize Level database (if we want to store blockchain in a database rather than in memory)
 // const db = new Level<string, string>(config.ethLevelDb);
-
 
 app.listen(PORT, async () => {
     console.log("===========================================================");
