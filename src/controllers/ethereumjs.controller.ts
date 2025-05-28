@@ -134,12 +134,16 @@ export const createEthereumBlock = async (req: Request, res: Response, next: Nex
 
 export const getEthereumBlockByNumber = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const blockNumber = Number(req.params.number);
+        if (isNaN(blockNumber) || blockNumber < 0) {
+            return res.status(400).json({ error: "Block number given is invalid" });
+        }
+
         if (!blockchain) {
             return next("Blockchain does not exist");
         }
 
-        const blockNumber = req.params.number;
-        const block = await blockchain.getBlock(Number(blockNumber));
+        const block = await blockchain.getBlock(blockNumber);
 
         const transaction = block.transactions[0];
         const buffer = Buffer.from(transaction.data);
