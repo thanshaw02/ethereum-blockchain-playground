@@ -37,7 +37,7 @@ export const createEthereumBlockchain = async (req: Request, res: Response, next
             blockchain = await createBlockchain({
                 validateBlocks: false,
                 validateConsensus: false,
-                genesisState,
+                genesisState, // initialize the genesis block on the blockchain
                 common,
             });
             const genesisBlockHash = blockchain.genesisBlock.hash()

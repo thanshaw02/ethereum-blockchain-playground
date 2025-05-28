@@ -1,6 +1,7 @@
 import { GethGenesis } from "@ethereumjs/common";
 
 // https://github.com/ethereumjs/ethereumjs-monorepo/blob/ae9e86ad3a3652bdf72b58cb2d6d0d2fa408582c/packages/testdata/src/gethGenesis/postMergeGethGenesis.ts#L4
+// this creates a custom Common for the blockchain and also outlines how the genisis block should be created
 export const postMergeGethGenesis: GethGenesis = {
     config: {
         chainId: 1,
