@@ -136,7 +136,7 @@ export const getEthereumBlockByNumber = async (req: Request, res: Response, next
     try {
         const blockNumber = Number(req.params.number);
         if (isNaN(blockNumber) || blockNumber < 0) {
-            return res.status(400).json({ error: "Block number given is invalid" });
+            return next("Block number given is invalid");
         }
 
         if (!blockchain) {
