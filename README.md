@@ -17,3 +17,7 @@ This repository is a discovery project for professional work in the future, I wi
     - Add a new **block** to the blockchain: POST `http://localhost:8000/api/block`
         - POST body data can be any JSON you'd liek to test with
     - Fetch transaction data added to a block by **block number**: GET `http://localhost:8000/api/block/:number`
+
+## Note
+
+Currently the blockchain is stored in-memory and is lost when nodemon restarts, I plan to integrate `Level` at some point into the project so the blockchain is more persistant.
